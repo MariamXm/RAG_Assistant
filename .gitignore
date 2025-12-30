@@ -21,3 +21,4 @@ chroma_db/
 build/
 dist/
 *.egg-info/
+.env
