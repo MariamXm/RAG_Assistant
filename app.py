@@ -1,44 +1,77 @@
-# app.py
-
 import streamlit as st
-from pypdf import PdfReader
-from vector_store import add_to_vector_db, query_vector_db
-from llm import generate_answer
+import requests
 
-st.set_page_config(page_title="PDF RAG Chatbot", layout="centered")
-st.title("📄 RAG Chatbot")
+API_URL = "http://127.0.0.1:8000"
 
-uploaded_file = st.file_uploader("Upload a PDF", type=["pdf"])
+st.set_page_config(page_title="RAG PDF Chatbot", layout="centered")
 
-if uploaded_file:
-    reader = PdfReader(uploaded_file)
-    text = ""
+st.title("📄 RAG PDF Chatbot")
+st.caption("Upload a PDF and chat with it using AI (Groq + LangChain)")
 
-    for page in reader.pages:
-        text += page.extract_text() + "\n"
+# session state for chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-    # Chunking
-    chunk_size = 500
-    chunks = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+# pdf upload section
+st.header("📤 Upload PDF")
 
-    add_to_vector_db(chunks)
-    st.success("PDF indexed successfully!")
+uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"])
 
-    query = st.text_input("Ask a question about the PDF:")
+if uploaded_file is not None:
+    if st.button("Upload & Process"):
+        with st.spinner("Uploading and processing PDF..."):
 
-    if query:
-        retrieved_chunks = query_vector_db(query)
+            files = {"file": uploaded_file}
 
-        if retrieved_chunks:
-            context = "\n\n".join(retrieved_chunks)
+            response = requests.post(
+                f"{API_URL}/upload",
+                files=files
+            )
 
-            answer = generate_answer(context, query)
+            if response.status_code == 200:
+                data = response.json()
+                st.success(f"PDF processed successfully! Chunks: {data['chunks']}")
+            else:
+                st.error("Upload failed. Check backend.")
 
-            st.subheader(" Answer")
-            st.write(answer)
+# chat interface
+st.header(" Chat with PDF")
 
-            st.subheader(" Retrieved Context")
-            for i, chunk in enumerate(retrieved_chunks):
-                st.write(f"**Chunk {i+1}:** {chunk}")
+# display chat history
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.write(msg["content"])
+
+# user input
+user_query = st.chat_input("Ask something about the PDF...")
+
+if user_query:
+
+    # store user message
+    st.session_state.messages.append({"role": "user", "content": user_query})
+
+    with st.chat_message("user"):
+        st.write(user_query)
+
+    # call backend
+    with st.spinner("Thinking..."):
+        response = requests.post(
+            f"{API_URL}/ask",
+            json={"question": user_query}
+        )
+
+        if response.status_code == 200:
+            answer = response.json()["answer"]
         else:
-            st.write("No relevant content found.")
+            answer = "Error: Could not get response from API."
+
+    # store assistant response
+    st.session_state.messages.append({"role": "assistant", "content": answer})
+
+    with st.chat_message("assistant"):
+        st.write(answer)
+
+
+if st.button(" Clear Chat"):
+    st.session_state.messages = []
+    st.rerun()
