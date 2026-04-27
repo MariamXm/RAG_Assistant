@@ -52,7 +52,7 @@ async def upload_pdf(file: UploadFile = File(...)):
 
     metadatas = [{"source": "uploaded_pdf"} for _ in chunks]
 
-    add_to_vector_db(chunks, metadatas)
+    add_to_vector_db(chunks, source="uploaded_pdf")
 
     return {
         "message": "PDF uploaded and indexed",

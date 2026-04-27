@@ -1,6 +1,7 @@
 from groq import Groq
 import os
 from dotenv import load_dotenv
+from langsmith import traceable
 
 load_dotenv()
 
@@ -11,6 +12,7 @@ if not api_key:
 client = Groq(api_key=api_key)
 
 
+@traceable(name="LLM Answer Generation")
 def generate_answer(context: str, question: str) -> str:
     prompt = f"""
 You are a precise document assistant.
@@ -32,7 +34,7 @@ ANSWER:
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0
+        temperature=0,
     )
 
     return response.choices[0].message.content
