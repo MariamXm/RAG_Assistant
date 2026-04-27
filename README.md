@@ -2,7 +2,7 @@
 
 A full-stack **Retrieval-Augmented Generation (RAG)** system that allows users to upload PDFs and ask questions about their content using AI.
 
-Built with **FastAPI (backend)**, **Streamlit (frontend)**, **LangChain**, **ChromaDB**, and **Groq LLM (Llama 3)**.
+Built with **FastAPI (backend)**, **Streamlit (frontend)**, **LangChain**, **Langsmith**, **ChromaDB**, and **Groq LLM (Llama 3)**.
 
 ---
 
@@ -31,6 +31,17 @@ Built with **FastAPI (backend)**, **Streamlit (frontend)**, **LangChain**, **Chr
 
 ---
 
+# How It Works
+
+1. Upload PDF
+2. Split into chunks
+3. Convert chunks into embeddings
+4. Store in ChromaDB
+5. Retrieve relevant chunks on query
+6. Send context to Groq LLM
+7. Return final answer
+---
+
 # ⚙️ Setup Instructions
 
 ## 1️⃣ Clone Repository
@@ -46,12 +57,7 @@ cd RAG_Assistant
 
 ```bash
 python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# Mac/Linux
-source venv/bin/activate
+source venv/Scripts/activate
 ```
 
 ---
@@ -96,14 +102,4 @@ streamlit run app.py
 App URL:
 [http://localhost:8501](http://localhost:8501)
 
----
 
-# How It Works
-
-1. Upload PDF
-2. Split into chunks
-3. Convert chunks into embeddings
-4. Store in ChromaDB
-5. Retrieve relevant chunks on query
-6. Send context to Groq LLM
-7. Return final answer
