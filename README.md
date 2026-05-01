@@ -1,105 +1,76 @@
 # 📄 RAG PDF Chatbot (LangChain + Groq + ChromaDB + FastAPI + Streamlit)
 
-A full-stack **Retrieval-Augmented Generation (RAG)** system that allows users to upload PDFs and ask questions about their content using AI.
+A full-stack **Retrieval-Augmented Generation (RAG)** system that allows users to upload PDFs and ask natural language questions about their content.
 
-Built with **FastAPI (backend)**, **Streamlit (frontend)**, **LangChain**, **Langsmith**, **ChromaDB**, and **Groq LLM (Llama 3)**.
+The project uses a **local FastAPI backend** for RAG processing and a **deployed Streamlit frontend** for user interaction.
 
 ---
 
-# 🚀 Features
+# 🚀 System Architecture
 
-- 📤 Upload and process PDF files
-- 🔍 Semantic search over document chunks
-- 🤖 AI-powered answers using Groq (Llama 3)
-- 🧠 Vector database using ChromaDB
-- ⚡ FastAPI backend for API handling
-- 🎨 Streamlit-based chat UI
-- 💾 Persistent vector storage (ChromaDB)
+```text
+Streamlit Frontend (Deployed on Streamlit Cloud)
+                ↓ HTTP Requests
+FastAPI Backend (Running Locally)
+                ↓
+RAG Pipeline (LangChain + ChromaDB)
+                ↓
+Groq LLM (Llama 3)
+                ↓
+Final Answer Returned to UI
+```
+---
 
+# ⚙️ Features
+  - 📤 Upload PDF documents
+  -  🧠 Automatic chunking + embedding generation
+  - 🔍 Semantic search using ChromaDB
+  - 🤖 AI-powered answers using Groq (Llama 3)
+  - ⚡ FastAPI backend for RAG processing
+  - 🎨 Streamlit cloud-based chat interface
+  - 💾 Persistent vector storage (local)
 ---
 
 # 🧰 Tech Stack
 
-- Python
-- FastAPI
-- Streamlit
-- LangChain
-- ChromaDB
-- HuggingFace Embeddings
-- Groq API (Llama 3)
-- PyPDF
+Python, FastAPI, Streamlit, LangChain, ChromaDB, HuggingFace Embeddings, Groq API (Llama 3), PyPDF
 
 ---
 
-# How It Works
-
-1. Upload PDF
-2. Split into chunks
-3. Convert chunks into embeddings
-4. Store in ChromaDB
-5. Retrieve relevant chunks on query
-6. Send context to Groq LLM
-7. Return final answer
----
-
-# ⚙️ Setup Instructions
-
+# 🚀 Setup Instructions
 ## 1️⃣ Clone Repository
-
 ```bash
-git clone https://github.com/MariamXm/RAG_Assistant.git
+git clone https://github.com/your-username/RAG_Assistant.git
 cd RAG_Assistant
-````
-
----
-
-## 2️⃣ Create Virtual Environment
-
+```
+## 2️⃣ Backend Setup (Run Locally)
+Create virtual environment:
 ```bash
 python -m venv venv
-source venv/Scripts/activate
+source venv/Scripts/activate   # Windows
 ```
-
----
-
-## 3️⃣ Install Dependencies
-
+Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-
----
-
-## 4️⃣ Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-GROQ_API_KEY=your_groq_api_key_here
-```
-
----
-
-# ▶️ Running the Project
-
-## 1️⃣ Start FastAPI Backend
-
+Run FastAPI backend:
 ```bash
 uvicorn api:app --reload --port 8000
 ```
+Backend will run at:
+```bash
+http://127.0.0.1:8000
+```
+## 3️⃣ Frontend Deployed on Streamlit Cloud
+Live App: https://ragassistant-apvdzttjd7f65ptfskybuh.streamlit.app/
 
-API Docs:
-[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+Upload a PDF and start asking questions.
 
 ---
+# 🚀 Future Improvements
 
-## 2️⃣ Start Streamlit Frontend
-
-```bash
-streamlit run app.py
-```
-
-App URL:
-[http://localhost:8501](http://localhost:8501)
-
-
+- Deploy FastAPI backend on cloud (Render / Railway)
+- Add authentication (JWT)
+- Multi-document support
+- Streaming responses
+- Better retrieval with reranking
